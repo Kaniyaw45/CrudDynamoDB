@@ -1,19 +1,19 @@
+import os
 import jwt
+import uuid
+import boto3
+import logging
 from datetime import datetime, timedelta
 from functools import wraps
 from flask import request, jsonify
-import boto3
 from botocore.exceptions import ClientError
-import logging
 from werkzeug.security import generate_password_hash, check_password_hash
-import uuid
-
 logger = logging.getLogger(__name__)
 
 # Configure DynamoDB
 dynamodb = boto3.resource(
     'dynamodb',
-    endpoint_url='http://localhost:8000',
+    endpoint_url=os.getenv('DATABASE_ENDPOINT'),
 )
 users_table = dynamodb.Table('Users')
 

@@ -1,29 +1,34 @@
-from flask import Flask, request, jsonify
+import os
+import uuid
 import boto3
+import logging
+from flask import Flask, request, jsonify
 from botocore.exceptions import ClientError
 from datetime import datetime
-import uuid
-import logging
 from auth import token_required, create_user, authenticate_user, create_token
 from models import TodoCreate, TodoUpdate, UserRegister, UserLogin
+from pydantic import ValidationError
+from dotenv import load_dotenv
 
+
+load_dotenv()
 # Configure logging to write to a file
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler("app.log"),
-        logging.StreamHandler()  # This will still print logs to the console
+        logging.StreamHandler() 
     ]
 )
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-
+print(os.getenv('DATABASE_ENDPOINT'))
 # Configure DynamoDB
 dynamodb = boto3.resource(
     'dynamodb',
-    endpoint_url='http://localhost:8000',
+    endpoint_url=os.getenv('DATABASE_ENDPOINT'),
 )
 
 # Reference to our tables
@@ -32,13 +37,13 @@ todos_table = dynamodb.Table('Todos')
 @app.route('/register', methods=['POST'])
 def register():
     try:
-        user_data = UserRegister(**request.get_json())
+        user_data = UserRegister.model_validate_json(request.data)
         user = create_user(user_data.dict())
         logger.info(f"New user registered: {user['email']}")
         return jsonify({'message': 'User created successfully'}), 201
-    except ValueError as e:
-        logger.error(f"Validation error during registration: {str(e)}")
-        return jsonify({'error': str(e)}), 400
+    except ValidationError as e:
+        logger.error(f"Validation error during registration: {e}")
+        return jsonify({'error': e.errors()}), 400
     except Exception as e:
         logger.error(f"Error during registration: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
@@ -46,7 +51,7 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     try:
-        data = UserLogin(**request.get_json())
+        data = UserLogin.model_validate_json(request.data)
         user = authenticate_user(data.email, data.password)
         if user:
             token = create_token(user['user_id'])
@@ -54,6 +59,9 @@ def login():
             return jsonify({'token': token})
         logger.warning(f"Failed login attempt for email: {data.email}")
         return jsonify({'error': 'Invalid credentials'}), 401
+    except ValidationError as e:
+        logger.error(f"Validation error during login: {e}")
+        return jsonify({'error': e.errors()}), 400
     except Exception as e:
         logger.error(f"Error during login: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
@@ -63,7 +71,7 @@ def login():
 def create_todo(current_user_id):
     try:
         logger.info("Creating new todo")
-        todo_data = TodoCreate(**request.get_json())
+        todo_data = TodoCreate.model_validate_json(request.data)
         
         todo_item = {
             'todo_id': str(uuid.uuid4()),
@@ -78,12 +86,15 @@ def create_todo(current_user_id):
         logger.info(f"Todo created successfully: {todo_item['todo_id']}")
         return jsonify({'message': 'Todo created successfully', 'todo': todo_item}), 201
     
-    except ValueError as e:
-        logger.error(f"Validation error: {str(e)}")
-        return jsonify({'error': str(e)}), 400
+    except ValidationError as e:
+        logger.error(f"Validation error: {e}")
+        return jsonify({'error': e.errors()}), 400
     except ClientError as e:
         logger.error(f"DynamoDB error: {str(e)}")
         return jsonify({'error': str(e)}), 500
+    except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
 
 @app.route('/todos/<todo_id>', methods=['GET'])
 @token_required
@@ -144,9 +155,9 @@ def update_todo(current_user_id, todo_id):
         logger.info(f"Todo updated successfully: {todo_id}")
         return jsonify({'message': 'Todo updated successfully', 'todo': response['Attributes']})
     
-    except ValueError as e:
-        logger.error(f"Validation error: {str(e)}")
-        return jsonify({'error': str(e)}), 400
+    except ValidationError as e:
+        logger.error(f"Validation error: {e}")
+        return jsonify({'error': e.errors()}), 400
     except ClientError as e:
         logger.error(f"DynamoDB error: {str(e)}")
         return jsonify({'error': str(e)}), 500

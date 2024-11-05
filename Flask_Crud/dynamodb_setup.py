@@ -1,7 +1,8 @@
 import boto3
+import os
 
 def create_tables():
-    dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
+    dynamodb = boto3.resource('dynamodb', endpoint_url=os.getenv('DATABASE_ENDPOINT'))
     
     # Create Todos table
     todos_table = dynamodb.create_table(
