@@ -9,9 +9,11 @@ from auth import token_required, create_user, authenticate_user, create_token
 from models import TodoCreate, TodoUpdate, UserRegister, UserLogin
 from pydantic import ValidationError
 from dotenv import load_dotenv
-
+from dynamodb_setup import create_tables
 
 load_dotenv()
+
+create_tables() 
 # Configure logging to write to a file
 logging.basicConfig(
     level=logging.INFO,
