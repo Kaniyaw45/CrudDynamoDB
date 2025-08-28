@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sample Fake HTML File — Demo</title>
+  <style>
+    :root{ --bg:#f5f7fb; --card:#ffffff; --muted:#6b7280; --accent:#2563eb }
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:var(--bg); color:#111827; margin:0;}
+    header{background:linear-gradient(90deg,#ffffffcc, #f0f4ff); padding:20px 28px; box-shadow:0 1px 0 rgba(16,24,40,0.04)}
+    .container{max-width:960px;margin:24px auto;padding:0 16px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent),#7c3aed);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:700}
+
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
+    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(2,6,23,0.06)}
+    h1{font-size:18px;margin:0}
+    p.lead{color:var(--muted);margin-top:8px}
+
+    .list{margin:12px 0;padding:0;list-style:none}
+    .list li{padding:10px 12px;border-radius:8px;margin-bottom:8px;background:#fbfdff;border:1px solid rgba(99,102,241,0.06);display:flex;justify-content:space-between;align-items:center}
+    .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:var(--accent);color:white;text-decoration:none;font-weight:600}
+    .btn.secondary{background:#e6eefc;color:var(--accent);border:1px solid rgba(37,99,235,0.08)}
+
+    form label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type=text], textarea, select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eefc;background:#fbfeff}
+    textarea{min-height:90px}
+
+    footer{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* Responsive */
+    @media (max-width:880px){.grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container brand">
+      <div class="logo">SF</div>
+      <div>
+        <h1 style="margin:0;font-size:16px">Sample Fake HTML</h1>
+        <div class="small">A compact demo page with fake data & interactions</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+    <div class="grid">
+      <section class="card" aria-labelledby="recent-title">
+        <h2 id="recent-title">Recent Activity</h2>
+        <p class="lead">This list shows fake events generated locally for demonstration purposes.</p>
+
+        <ul class="list" id="events-list">
+          <!-- Items inserted by JavaScript -->
+        </ul>
+
+        <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+          <a href="#" class="btn" id="generate-btn">Generate fake event</a>
+          <a href="#" class="btn secondary" id="clear-btn">Clear</a>
+          <div style="margin-left:auto;color:var(--muted);font-size:13px">Events: <span id="count">0</span></div>
+        </div>
+
+        <hr style="margin:16px 0;border:none;border-top:1px solid #f1f5f9">
+
+        <h3 style="margin-bottom:8px">Quick note</h3>
+        <form id="note-form">
+          <label for="note">Add a short note</label>
+          <textarea id="note" placeholder="Write something..."></textarea>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button class="btn" type="submit">Save note</button>
+            <button class="btn secondary" id="download-btn" type="button">Download JSON</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="card" aria-labelledby="about-title">
+        <h2 id="about-title">About this file</h2>
+        <p class="small">This HTML file intentionally contains fake content, simple styling, and a tiny JavaScript demo that generates mock events in-browser. No network requests are made.</p>
+
+        <h4 style="margin-top:12px">Sample settings</h4>
+        <label for="theme">Theme</label>
+        <select id="theme">
+          <option value="auto">Auto</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+
+        <h4 style="margin-top:12px">Contact</h4>
+        <div class="small">john.doe@example.com</div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #f1f5f9">
+        <div class="small">Tip: try the "Generate fake event" button or write a note and click Download JSON to save it locally.</div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">Made for demo — no real data. &middot; Version 1.0</div>
+  </footer>
+
+  <script>
+    // Small in-page fake data generator and download helper
+    const events = [];
+
+    function formatTime(d){
+      return d.toLocaleString();
+    }
+
+    function renderList(){
+      const list = document.getElementById('events-list');
+      const count = document.getElementById('count');
+      list.innerHTML = '';
+      events.slice().reverse().forEach((ev, idx) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<div style=\"flex:1\"><strong>${ev.title}</strong><div class=\"small\">${ev.desc}</div></div><div style=\"margin-left:12px;color:var(--muted);font-size:12px\">${formatTime(new Date(ev.ts))}</div>`;
+        list.appendChild(li);
+      });
+      count.textContent = events.length;
+    }
+
+    function randomEvent(){
+      const verbs = ['Created','Updated','Deleted','Assigned','Reviewed','Exported'];
+      const objects = ['report','user','task','diagram','integration','setting'];
+      return {
+        title: verbs[Math.floor(Math.random()*verbs.length)] + ' ' + objects[Math.floor(Math.random()*objects.length)],
+        desc: 'This is a fake event for demo purposes — no persistent storage.',
+        ts: Date.now()
+      };
+    }
+
+    document.getElementById('generate-btn').addEventListener('click', (e)=>{
+      e.preventDefault();
+      events.push(randomEvent());
+      renderList();
+    });
+
+    document.getElementById('clear-btn').addEventListener('click', (e)=>{
+      e.preventDefault();
+      events.length = 0; renderList();
+    });
+
+    document.getElementById('note-form').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const note = document.getElementById('note').value.trim();
+      if (!note) { alert('Please write a short note first.'); return; }
+      events.push({title:'Note saved', desc: note, ts: Date.now()});
+      document.getElementById('note').value = '';
+      renderList();
+    });
+
+    document.getElementById('download-btn').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify({events}, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'sample-fake-data.json';
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // Load a couple of sample events on first paint
+    events.push({title:'Initialized demo','desc':'A few sample events were created automatically.','ts':Date.now() - 1000*60*60});
+    events.push({title:'Welcome','desc':'Click generate to add more fake events.','ts':Date.now() - 1000*60});
+    renderList();
+  </script>
+</body>
+</html>
