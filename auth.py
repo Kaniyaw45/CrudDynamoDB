@@ -90,8 +90,9 @@ async def check_existing_user(db: Session, username: str, email: str):
         if existing_user.username == username:
             raise HTTPException(status_code=400, detail="Username is already taken")
         if existing_user.email == email:
+            print("===========================")
             raise HTTPException(status_code=400, detail="Email is already registered")
-
+        
 
 @router.post("/create")
 async def create_user(
