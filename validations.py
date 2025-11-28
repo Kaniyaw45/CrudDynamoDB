@@ -61,11 +61,11 @@ async def verify_review_access(
             detail=f"Access denied: Role '{user_role}' does not have '{required_permission}' permission"
         )
     
-    # Super admin can access all projects
+   
     if user_role == "super_admin":
         return review
     
-    # Project-specific roles must match the project
+   
     if user_role in ["project_admin", "project_user"]:
         if int(user_project_id) != project_id:
             raise HTTPException(
@@ -112,14 +112,14 @@ async def verify_project_access(
             detail="Invalid API key: missing role information"
         )
     
-    # Define permission matrix
+   
     role_permissions = {
         "super_admin": ["read", "write", "delete", "admin"],
         "project_admin": ["read", "write", "delete", "admin"],
         "project_user": ["read"]
     }
     
-    # Check if role exists and has required permission
+    
     if user_role not in role_permissions:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
