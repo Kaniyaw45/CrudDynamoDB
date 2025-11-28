@@ -79,7 +79,7 @@ async def verify_project_access(
     project_id: int,
     current_user: Dict[str, Any],
     db,
-    required_permission: str = "read"  # "read", "write", "delete", "admin"
+    required_permission: str = "read"  
 ):
     """
     Helper function to verify project exists and user has specific permission
@@ -91,7 +91,6 @@ async def verify_project_access(
         required_permission: Required permission level ("read", "write", "delete", "admin")
     """
     
-    # Check if project exists
     project_result = await db.execute(
         select(Project).where(Project.id == project_id)
     )
