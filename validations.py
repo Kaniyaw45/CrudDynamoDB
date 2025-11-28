@@ -16,7 +16,7 @@ async def verify_review_access(
         required_permission: Required permission level ("read", "write", "delete", "admin")
     """
     
-    # Check if review exists and belongs to the project
+
     review_result = await db.execute(
         select(Review).where(
             Review.id == review_id,
