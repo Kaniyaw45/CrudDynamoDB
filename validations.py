@@ -3,7 +3,7 @@ async def verify_review_access(
     review_id: int,
     current_user: Dict[str, Any],
     db,
-    required_permission: str = "read"  # "read", "write", "delete", "admin"
+    required_permission: str = "read"  
 ):
     """
     Helper function to verify review exists and user has specific permission
@@ -41,7 +41,7 @@ async def verify_review_access(
             detail="Invalid API key: missing role information"
         )
     
-    # Define permission matrix
+  
     role_permissions = {
         "super_admin": ["read", "write", "delete", "admin"],
         "project_admin": ["read", "write", "delete", "admin"],
@@ -102,7 +102,7 @@ async def verify_project_access(
             detail="Project not found"
         )
     
-    # Get user info from API key
+   
     user_role = current_user.get("role")
     user_project_id = current_user.get("project_id")
     
