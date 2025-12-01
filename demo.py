@@ -5,4 +5,4 @@ def abc():
 
 
 def abc(result):
-    print(f"Result is: {result}")
+
