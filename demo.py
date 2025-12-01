@@ -1,2 +1,2 @@
 def abc():
-  print("Result: ==")
+  print("Result: ")
