@@ -15,7 +15,7 @@ dynamodb = boto3.resource(
     'dynamodb',
     endpoint_url=os.getenv('DATABASE_ENDPOINT'),
 )
-users_table = dynamodb.Table('Users')
+users_table = dynamodb.Table('Users','')
 
 SECRET_KEY = "71a0665e-750f-4fea-80f8-8912f8da72a8" 
 
