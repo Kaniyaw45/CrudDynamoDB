@@ -17,7 +17,7 @@ dynamodb = boto3.resource(
 )
 users_table = dynamodb.Table('Users')
 
-SECRET_KEY = "71a0665e-750f-4fea-80f8-8912f8da72a8" 
+SECRET_KEY = "71a0665e-750f-4fea-80f8-8912f8da72a8jij" 
 
 def create_token(user_id: str) -> str:
     payload = {
