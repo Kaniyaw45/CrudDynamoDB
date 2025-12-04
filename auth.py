@@ -16,12 +16,11 @@ from dotenv import load_dotenv
 import logging
 from sqlalchemy import select
 import asyncio
+from app.database import get_db
+from app.utils.app_config import AppConfig
 
 load_dotenv()
 logger = logging.getLogger(__name__)
-
-from app.database import get_db
-from app.utils.app_config import AppConfig
 
 router = APIRouter(prefix="/users", tags=["users"])
 asyncio.run(AppConfig.get_configuration())
