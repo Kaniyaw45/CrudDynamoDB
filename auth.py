@@ -15,6 +15,7 @@ import jwt
 from dotenv import load_dotenv
 import logging
 from sqlalchemy import select
+import asyncio
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -23,8 +24,7 @@ from app.database import get_db
 from app.utils.app_config import AppConfig
 
 router = APIRouter(prefix="/users", tags=["users"])
-import asyncio
-# asyncio.run(AppConfig.get_configuration())
+asyncio.run(AppConfig.get_configuration())
 
 @router.get("/register", response_class=templates.TemplateResponse)
 async def create_user_form(request: Request):
