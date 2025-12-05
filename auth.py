@@ -11,7 +11,7 @@ import json
 import requests
 import hashlib
 import base64
-import jwt
+import jwt,pyjwt
 from dotenv import load_dotenv
 import logging
 from sqlalchemy import select
