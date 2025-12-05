@@ -48,6 +48,7 @@ async def create_user_form(request: Request):
 
 def validate_email(email: str):
     """Validate the email format."""
+    print("::::::::")
     email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     if not re.match(email_regex, email):
         raise HTTPException(status_code=400, detail="Invalid email format")
