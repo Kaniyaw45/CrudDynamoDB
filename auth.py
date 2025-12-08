@@ -188,7 +188,7 @@ async def login(request: Request):
         f"?client_id={AppConfig._config.zitadel_client_id}"
         f"&redirect_uri={request.url_for('auth')}"
         f"&response_type=code"
-        f"&scope=openid%20profile%20email"
+        # f"&scope=openid%20profile%20email"
         f"&code_challenge={code_challenge}"
         f"&code_challenge_method=S256"
     )
