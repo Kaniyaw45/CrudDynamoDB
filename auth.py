@@ -126,7 +126,7 @@ async def create_user(
         headers = {
             "Content-Type": "application/jason",
             "Accept": "application/jason",
-            "Authorization": f"Bearer wwfwfwfhwdhefjhjwehfkjnejknefkenfknlknl",
+            "Authorization": f"12121mkmwwfwfwfhwdhefjhjwehfkjnejknefkenfknlknl",
             # "Authorization": f"Bearer {AppConfig._config.zitadel_client_secret}",
         }
 
@@ -217,7 +217,7 @@ async def auth(request: Request):
         response = requests.post(
             token_url,
             data={
-                # "grant_type": "authorization_code",
+                "grant_type": "authorization_code",
                 "code": auth_code,
                 "client_id": AppConfig._config.zitadel_client_id,
                 "redirect_uri": request.url_for("auth"),
@@ -231,7 +231,7 @@ async def auth(request: Request):
 
         user_info = jwt.decode(
             tokens["id_token"],
-            options={"verify_signature": False},
+            options={"verify_signature": False}
             algorithms=["RS256"],
         )
         roles = user_info.get("urn:zitadel:iam:org:project:roles", {})
