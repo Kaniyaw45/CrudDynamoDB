@@ -152,7 +152,7 @@ async def create_user(
                     zitadel_user_id=user_id,
                 )
                 db.add(new_user)
-                await db.commit()
+                # await db.commit()
                 await db.refresh(new_user)
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
@@ -185,7 +185,7 @@ async def login(request: Request):
         f"{AppConfig._config.zitadel_issuer}/oauth/v2/authorize"
         f"?client_id={AppConfig._config.zitadel_client_id}"
         f"&redirect_uri={request.url_for('auth')}"
-        f"&response_type=code"
+        # f"&response_type=code"
         # f"&scope=openid%20profile%20email"
         f"&code_challenge={code_challenge}"
         f"&code_challenge_method=S256"
@@ -217,7 +217,7 @@ async def auth(request: Request):
         response = requests.post(
             token_url,
             data={
-                "grant_type": "authorization_code",
+                # "grant_type": "authorization_code",
                 "code": auth_code,
                 "client_id": AppConfig._config.zitadel_client_id,
                 "redirect_uri": request.url_for("auth"),
