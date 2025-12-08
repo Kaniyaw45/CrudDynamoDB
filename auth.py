@@ -87,7 +87,6 @@ async def check_existing_user(db: Session, username: str, email: str):
     existing_user = existing_user_result.scalars().first()
     if existing_user:
         if existing_user.username == username:
-            print("::::::::::::::::)
             raise HTTPException(status_code=400, detail="Username is already taken")
         if existing_user.email == email:
             print("===========================")
