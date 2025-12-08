@@ -128,13 +128,13 @@ async def create_user(
         headers = {
             "Content-Type": "application/jason",
             "Accept": "application/jason",
-            "Authorization": f"Bearer hwdhefjhjwehfkjnejknefkenfknlknl",
+            "Authorization": f"Bearer wwfwfwfhwdhefjhjwehfkjnejknefkenfknlknl",
             # "Authorization": f"Bearer {AppConfig._config.zitadel_client_secret}",
         }
 
         url = f"{AppConfig._config.zitadel_issuer}/v2/users/human"
         response = requests.post(url, headers=headers, data=payload)
-        if response.status_code == 201:
+        if response.status_code != 201:
             response_data = response.json()
             user_id = response_data.get("userId")
             if not user_id:
@@ -224,7 +224,7 @@ async def auth(request: Request):
                 "client_id": AppConfig._config.zitadel_client_id,
                 "redirect_uri": request.url_for("auth"),
                 "code_verifier": code_verifier,
-                # "scope": "openid email profile",
+                "scope": "openid email profile",
                 "scope": "urn:iam:org:project:roles",
             },
         )
