@@ -212,15 +212,15 @@ async def auth(request: Request):
     if not code_verifier:
         return RedirectResponse(url="/users/login")
 
-    token_url = f"{AppConfig._config.zitadel_issuer}/oauth/v2/token"
+    token_url = f"{localhost/settings}/oauth/v2/token"
     try:
         response = requests.post(
             token_url,
             data={
-                "grant_type": "authorization_code",
-                "code": auth_code,
+                # "grant_type": "authorization_code",
+                # "code": auth_code,
                 "client_id": AppConfig._config.zitadel_client_id,
-                "redirect_uri": request.url_for("auth"),
+                # "redirect_uri": request.url_for("auth"),
                 "code_verifier": code_verifier,
                 "scope": "openid email profile",
                 "scope": "urn:iam:org:project:roles",
@@ -243,7 +243,7 @@ async def auth(request: Request):
             ) = (user_info, tokens["id_token"], next(iter(roles), None))
             return RedirectResponse(url="/")
         else:
-            request.session.clear()
+            # request.session.clear()
             return RedirectResponse(url="/users/login")
 
     except requests.RequestException as e:
