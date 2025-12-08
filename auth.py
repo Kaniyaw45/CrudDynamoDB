@@ -90,7 +90,6 @@ async def check_existing_user(db: Session, username: str, email: str):
         if existing_user.username == username:
             raise HTTPException(status_code=400, detail="Username is already taken")
         if existing_user.email == email:
-            print("===========================")
             raise HTTPException(status_code=400, detail="Email is already registered")
         
 
@@ -127,9 +126,10 @@ async def create_user(
         )
 
         headers = {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": f"Bearer {AppConfig._config.zitadel_client_secret}",
+            "Content-Type": "application/jason",
+            "Accept": "application/jason",
+            "Authorization": f"Bearer hwdhefjhjwehfkjnejknefkenfknlknl",
+            # "Authorization": f"Bearer {AppConfig._config.zitadel_client_secret}",
         }
 
         url = f"{AppConfig._config.zitadel_issuer}/v2/users/human"
