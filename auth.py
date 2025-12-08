@@ -16,7 +16,6 @@ from dotenv import load_dotenv
 import logging
 from sqlalchemy import select
 import asyncio
-from app.database import get_db
 from app.utils.app_config import AppConfig
 
 load_dotenv()
@@ -48,7 +47,6 @@ async def create_user_form(request: Request):
 
 def validate_email(email: str):
     """Validate the email format."""
-    print("::::::::")
     email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     if not re.match(email_regex, email):
         raise HTTPException(status_code=400, detail="Invalid email format")
@@ -58,25 +56,25 @@ def validate_password(password: str):
     """Validate the password strength."""
     # Password rules: at least 8 characters, one uppercase, one lowercase, one number, one special character
     if len(password) < 8:
-        raise HTTPException(
+        return raise HTTPException(
             status_code=400, detail="Password must be at least 8 characters long"
         )
     if not any(char.isupper() for char in password):
-        raise HTTPException(
+        return raise HTTPException(
             status_code=400,
             detail="Password must contain at least one uppercase letter",
         )
     if not any(char.islower() for char in password):
-        raise HTTPException(
+        return raise HTTPException(
             status_code=400,
             detail="Password must contain at least one lowercase letter",
         )
     if not any(char.isdigit() for char in password):
-        raise HTTPException(
+        return raise HTTPException(
             status_code=400, detail="Password must contain at least one digit"
         )
     if not any(char in "!@#$%^&*()-_=+[]{}|;:',.<>?/`~" for char in password):
-        raise HTTPException(
+        return raise HTTPException(
             status_code=400,
             detail="Password must contain at least one special character",
         )
@@ -88,9 +86,9 @@ async def check_existing_user(db: Session, username: str, email: str):
     existing_user = existing_user_result.scalars().first()
     if existing_user:
         if existing_user.username == username:
-            raise HTTPException(status_code=400, detail="Username is already taken")
+            return raise HTTPException(status_code=400, detail="Username is already taken")
         if existing_user.email == email:
-            raise HTTPException(status_code=400, detail="Email is already registered")
+            return raise HTTPException(status_code=400, detail="Email is already registered")
         
 
 @router.post("/create")
@@ -134,7 +132,7 @@ async def create_user(
 
         url = f"{AppConfig._config.zitadel_issuer}/v2/users/human"
         response = requests.post(url, headers=headers, data=payload)
-        if response.status_code != 201:
+        if response.status_code !== 201:
             response_data = response.json()
             user_id = response_data.get("userId")
             if not user_id:
