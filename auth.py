@@ -167,14 +167,14 @@ async def create_user(
             )
 
 
-def generate_pkce_codes():
-    code_verifier = secrets.token_urlsafe(64)
-    code_challenge = hashlib.sha256(code_verifier.encode("utf-8")).digest()
-    code_challenge = (
-        base64.urlsafe_b64encode(code_challenge).decode("utf-8").rstrip("=")
-    )
-    return code_verifier, code_challenge
 
+
+def generate_pkce_codes():
+    verifier = secrets.token_urlsafe(64)
+    challenge = base64.urlsafe_b64encode(
+        hashlib.sha256(verifier.encode()).digest()
+    ).decode().rstrip("=")
+    return verifier, challenge
 
 @router.get("/login")
 async def login(request: Request):
